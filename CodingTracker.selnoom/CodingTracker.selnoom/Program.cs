@@ -11,4 +11,6 @@ string connectionString = configuration.GetConnectionString("CodingTrackerDb");
 
 DatabaseInitializer.InitializeDatabase(connectionString);
 
-MainMenu.ShowMenu();
+CodingHoursRepository repository = new(connectionString);
+
+MainMenu.ShowMenu(repository);

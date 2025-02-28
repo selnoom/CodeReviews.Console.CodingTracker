@@ -14,8 +14,7 @@ internal static class DatabaseInitializer
             CREATE TABLE IF NOT EXISTS codingtracker (
                 ID INTEGER PRIMARY KEY AUTOINCREMENT,
                 StartTime TEXT,
-                EndTime TEXT,
-                Duration TEXT);";
+                EndTime TEXT);";
 
         connection.Execute(query);
     }

@@ -9,6 +9,18 @@ internal static class Validation
     {
         return int.Parse(input.Split('-')[0].Trim());
     }
+
+    internal static string ValidateDateInput()
+    {
+        string startTimeInput = AnsiConsole.Ask<string>("");
+        while (!DateTime.TryParseExact(startTimeInput, "yyyy-MM-dd HH:mm", null, System.Globalization.DateTimeStyles.None, out DateTime startTime))
+        {
+            AnsiConsole.MarkupLine("[bold red]Invalid input. Please try again.[/]\n");
+            startTimeInput = AnsiConsole.Ask<string>("Enter date (yyyy-MM-dd HH:mm):\n\n");
+        }
+        return startTimeInput;
+    }
+
     //internal static int ValidateMainMenuInput (string userInput)
     //{
     //    int validatedInput;

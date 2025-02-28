@@ -1,11 +1,12 @@
-﻿using CodingTracker.selnoom.Helpers;
+﻿using CodingTracker.selnoom.Data;
+using CodingTracker.selnoom.Helpers;
 using Spectre.Console;
 
 namespace CodingTracker.selnoom.UI;
 
 internal static class MainMenu
 {
-    internal static void ShowMenu()
+    internal static void ShowMenu(CodingHoursRepository repository)
     {
         while (true)
         {
@@ -30,10 +31,36 @@ internal static class MainMenu
             {
                 case 0:
                     AnsiConsole.Markup("[bold green]Goodbye![/]");
-                    return; 
+                    return;
+                case 1:
+
+                    break;
+                case 2:
+                    CreateMenu(repository);
+                    break;
                 default:
                     return;
             }
         }
+    }
+
+    internal static void CreateMenu(CodingHoursRepository repository)
+    {
+        //TODO
+        // Add validation to check if first date is before second date. Also, let user return to main menu. 
+        string startTime;
+        string endTime;
+
+        AnsiConsole.Clear();
+        AnsiConsole.MarkupLine("[bold]Please type the starting time of your coding session (Format: yyyy-MM-dd HH:mm):[/]");
+        startTime = Validation.ValidateDateInput();
+
+        AnsiConsole.Clear();
+        AnsiConsole.MarkupLine("[bold]Now, type the ending time of your coding session (Format: yyyy-MM-dd HH:mm):[/]");
+        endTime = Validation.ValidateDateInput();
+
+        repository.CreateRecord(startTime, endTime);
+        AnsiConsole.MarkupLine("[bold green]Entry was successfully created! Press enter to continue[/]");
+        AnsiConsole.Prompt(new TextPrompt<string>("").AllowEmpty());
     }
 }
