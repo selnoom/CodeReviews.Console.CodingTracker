@@ -56,7 +56,7 @@ internal class CodingHoursRepository
         connection.Open();
 
         var query = @"
-            SELECT Id, StartTime, EndTime FROM codinghours";
+            SELECT Id, StartTime, EndTime FROM codingtracker";
 
         List<CodingHours> records = connection.Query<CodingHours>(query).ToList();
 

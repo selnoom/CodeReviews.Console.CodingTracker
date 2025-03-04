@@ -1,5 +1,6 @@
 ﻿using CodingTracker.selnoom.Data;
 using CodingTracker.selnoom.Helpers;
+using CodingTracker.selnoom.Models;
 using Spectre.Console;
 
 namespace CodingTracker.selnoom.UI;
@@ -33,7 +34,7 @@ internal static class MainMenu
                     AnsiConsole.Markup("[bold green]Goodbye![/]");
                     return;
                 case 1:
-
+                    ShowSessionsMenu(repository);
                     break;
                 case 2:
                     CreateMenu(repository);
@@ -44,20 +45,50 @@ internal static class MainMenu
         }
     }
 
+    private static void ShowSessionsMenu(CodingHoursRepository repository)
+    {
+        List<CodingHours> sessions = new();
+        sessions = repository.GetAllRecords();
+
+        AnsiConsole.Clear();
+
+        if (sessions.Count > 0)
+        {
+            AnsiConsole.MarkupLine("[bold]Sessions:[/]\n");
+            foreach (CodingHours session in sessions)
+            {
+                AnsiConsole.MarkupLine($"Start Time: {session.StartTime}\t End Time: {session.EndTime}\t Duration: {Validation.FormatDuration(session.Duration)}");
+            }
+        }
+        else
+        {
+            AnsiConsole.MarkupLine("[bold]No sessions yet.[/]\n");
+        }
+
+        AnsiConsole.MarkupLine("\nPress enter to continue");
+        AnsiConsole.Prompt(new TextPrompt<string>("").AllowEmpty());
+    }
+
     internal static void CreateMenu(CodingHoursRepository repository)
     {
-        //TODO
-        // Add validation to check if first date is before second date. Also, let user return to main menu. 
         string startTime;
         string endTime;
 
         AnsiConsole.Clear();
-        AnsiConsole.MarkupLine("[bold]Please type the starting time of your coding session (Format: yyyy-MM-dd HH:mm):[/]");
-        startTime = Validation.ValidateDateInput();
+        AnsiConsole.MarkupLine("[bold]Please type the starting time of your coding session (Format: yyyy-MM-dd HH:mm) or 0 to return to the menu:[/]");
+        startTime = Validation.ValidateTimeInput();
+        if (Validation.ReturnToMenu(startTime))
+        {
+            return;
+        }
 
         AnsiConsole.Clear();
-        AnsiConsole.MarkupLine("[bold]Now, type the ending time of your coding session (Format: yyyy-MM-dd HH:mm):[/]");
-        endTime = Validation.ValidateDateInput();
+        AnsiConsole.MarkupLine("[bold]Now, type the ending time of your coding session (Format: yyyy-MM-dd HH:mm) or 0 to return to the menu:[/]");
+        endTime = Validation.ValidateEndTimeInput(startTime);
+        if (Validation.ReturnToMenu(endTime))
+        {
+            return;
+        }
 
         repository.CreateRecord(startTime, endTime);
         AnsiConsole.MarkupLine("[bold green]Entry was successfully created! Press enter to continue[/]");
